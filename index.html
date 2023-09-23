@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Compound Interest Calculator</title>
+    <!-- Include the Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="calculator">
+            <h1>Welcome to the Compound Interest Calculator!</h1>
+            <div class="questions">
+    <label for="principal">What is your starting principal?</label>
+  <p> This is where you enter your starting dollar amount.</p>
+    <input type="number" id="principal">
+    <br>
+    <label for="rate">What is the expected Interest Rate?</label>
+  <p> Enter the anticipated interest rate here. Often times, this value can fluctuate throughout the year.</p>
+    <input type="number" id="rate">
+    <br>
+    <label for="compound">How often does the principal compound?</label>
+  <p> this determines how many times annually you receive returns on your investment</p>
+    <select id="compound">
+        <option value="1">Annually</option>
+        <option value="2">Quarterly</option>
+        <option value="3">Monthly</option>
+        <option value="4">Daily</option>
+    </select>
+    <br>
+    <label for="time">How many years to allow for growth?</label>
+  <p> This will allow you to see what your money will be worth in the future. </p>
+    <input type="number" id="time">
+<br>
+<br>
+     </div>
+            <button id="calculate" onclick="calculateCompoundInterest()">Calculate</button>
+            <p id="result"></p>
+        </div>
+        <!-- Add a container for the chart -->
+        <div class="chart-container">
+            <canvas id="chartContainer"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript code for calculating and plotting the graph
+    </script>
+</body>
+</html>
+
+
+  
+    <script>
+        function calculateCompoundInterest() {
+            // Retrieve user inputs from the input fields
+            const principal = parseFloat(document.getElementById('principal').value);
+            const rate = parseFloat(document.getElementById('rate').value) / 100;
+            const compoundElement = document.getElementById('compound');
+            const compoundFrequency = parseFloat(compoundElement.value);
+            let compound;
+
+            // Determine the compound frequency based on user input
+            switch (compoundFrequency) {
+                case 2:
+                    compound = 4;
+                    break;
+                case 3:
+                    compound = 12;
+                    break;
+                case 4:
+                    compound = 365;
+                    break;
+                default:
+                    compound = 1;
+            }
+
+            const time = parseFloat(document.getElementById('time').value);
+            let totalAmount = principal; // Initialize the total amount with the principal value
+
+            // Calculate the compound interest amounts over time
+            const amountsPerYear = [];
+            const years = [];
+
+            for (let year = 1; year <= time; year++) {
+                const amount = principal * Math.pow(1 + rate / compound, compound * year);
+                amountsPerYear.push(amount.toFixed(2)); // Round the amount to the nearest hundredth and store it
+                totalAmount = amount; // Store the principal value for the current year
+                years.push(year);
+            }
+
+            // Print the total amount as a full sentence
+            const resultElement = document.getElementById('result');
+            resultElement.textContent = `Your money will be worth $${totalAmount.toFixed(2)} in ${parseInt(time)} years.`;
+
+
+            // Plot the chart using Chart.js
+            const ctx = document.getElementById('chartContainer').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: 'Principal Amount ($)',
+                        data: amountsPerYear,
+                        borderColor: 'rgb(75, 192, 192)',
+                        borderWidth: 2,
+                        fill: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Compound Interest Growth',
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Year',
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Principal Amount ($)',
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</div>    
+</body>
+</html>
